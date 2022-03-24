@@ -11,8 +11,9 @@ class CategoryModel {
           default: null,
         },
         userid: {
-          type: String,
-          required : true
+          type:mongoose.Schema.Types.ObjectId,
+          ref:'User',
+          required: true
         }
       },
       {
@@ -22,7 +23,7 @@ class CategoryModel {
     schema.plugin(uniqueValidator);
     mongoose.model('Category', schema);
   }
-
+  
   getInstance() {
     this.initSchema();
     return mongoose.model('Category');

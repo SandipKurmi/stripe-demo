@@ -15,12 +15,14 @@ class BlogModel {
                     default: null,
                 },
                 category: {
-                    type: String,
+                    type: Array,
                     required: true
                 },
                 userid: {
-                  type: String,
-                  required : true
+                    type:mongoose.Schema.Types.ObjectId,
+                    ref:'User',
+                    required: true
+
                 }
             },
             {
