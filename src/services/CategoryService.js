@@ -2,6 +2,8 @@ import { ExportCustomJobPage } from 'twilio/lib/rest/bulkexports/v1/export/expor
 import Service from './Service';
 import bcrypt from 'bcrypt';
 import { verify } from 'jsonwebtoken';
+import dotenv from "dotenv";
+dotenv.config();
 
 
 
@@ -9,22 +11,16 @@ class CategoryService extends Service {
     constructor(model) {
         super(model);
         this.insertcategory = this.insertcategory.bind(this);
-
-        this.searchcategoryname = this.searchcategoryname.bind(this);
-
-
-        this.get1 = this.get1.bind(this);
-        this.update1 = this.update1.bind(this);
-        this.delete = this.delete.bind(this);
+        this.getcategory = this.getcategory.bind(this);
+        this.updatecategory = this.updatecategory.bind(this);
+        this.deletecategory = this.deletecategory.bind(this);
     }
 
     async insertcategory(a) {
         try {
-            const token = a.Auth
-            const decoded = verify(token, 'servskvlsnjsdhfjkhjkds');
             var data = new this.model({
                 Categoryname: a.body.Categoryname,
-                userid: decoded.userID
+                userid: a.userid
             });
             await data.save()
             // const data = await this.model.create(a.body);;
@@ -43,19 +39,16 @@ class CategoryService extends Service {
             };
         }
     }
-    //curd
-    async get1(a) {
+    async getcategory(a) {
         try {
-            const token = a.Auth
-            const decoded = verify(token, 'servskvlsnjsdhfjkhjkds');
-            let userdata = await this.model.find({ "userid": decoded.userID })
+            let userdata = await this.model.find({ "userid": a.userid })
             return {
                 error: false,
                 statusCode: 202,
+                totaldata : userdata.length,
                 data: userdata,
             };
         } catch (err) {
-            // console.log('errors ssdsds',err);
             return {
                 error: true,
                 statusCode: 500,
@@ -64,40 +57,27 @@ class CategoryService extends Service {
             };
         }
     }
-
-    async update1(a) {
+    async updatecategory(categoryname, catid, userid) {
         try {
-            console.log(a.body)
-            const token = a.Auth
-            const decoded = verify(token, 'servskvlsnjsdhfjkhjkds');       
-          let tempuser = await this.model.findOne({ "userid": decoded.userID })
-          if (tempuser) {
-                data = "test"
-                if (data) {
+            let tempuser = await this.model.find({ userid: userid })
+            if (tempuser) {
+                const updatedCategory = await this.model.updateOne({ _id: catid }, { Categoryname: categoryname });
+                // const updatedCategory = await this.model.findByIdAndUpdate(catid, {$set: categoryname }, { new: true });
                     return {
                         error: false,
                         deleted: true,
                         statusCode: 200,
-                        message: 'record update successfullly!',
-                        data
+                        data: updatedCategory
                     };
-                } else {
-                    return {
-                        error: true,
-                        statusCode: 404,
-                        message: 'item not found',
-                    };
-                }
             } else {
                 return {
                     error: true,
                     statusCode: 404,
-                    message: 'item not found',
+                    message: 'category not found',
                 };
             }
-
         } catch (err) {
-            // console.log('errors ssdsds',err);
+            console.log(err);
             return {
                 error: true,
                 statusCode: 500,
@@ -107,14 +87,11 @@ class CategoryService extends Service {
         }
     }
 
-
-    async delete(a) {
+    
+    async deletecategory(a) {
         try {
-            const token = a.Auth
             const categortyid = a.id
-            const decoded = verify(token, 'servskvlsnjsdhfjkhjkds');
-            // decoded.userID
-            let tempuser = await this.model.findOne({ "userid": decoded.userID })
+            let tempuser = await this.model.findOne({ "userid": a.userID })
             if (tempuser) {
                 let catid = await this.model.findByIdAndDelete(categortyid)
                 if (catid) {
@@ -148,29 +125,6 @@ class CategoryService extends Service {
             };
         }
     }
-
-    async searchcategoryname(a) {
-        try {
-            const token = a.Auth
-            const decoded = verify(token, 'servskvlsnjsdhfjkhjkds');
-            // decoded.userID
-            // const data = await this.model.create(a.body);;
-            return {
-                error: false,
-                statusCode: 202,
-                data: data,
-            };
-        } catch (err) {
-            // console.log('errors ssdsds',err);
-            return {
-                error: true,
-                statusCode: 500,
-                message: 'cant find a catogory',
-                errors: err,
-            };
-        }
-    }
-    
 }
 
 export default CategoryService;

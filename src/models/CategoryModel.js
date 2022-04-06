@@ -6,7 +6,7 @@ class CategoryModel {
   initSchema() {
     const schema = new Schema(
       {
-        Categoryname: {
+        title: {
           type: String,
           default: null,
         },
@@ -15,10 +15,7 @@ class CategoryModel {
           ref:'User',
           required: true
         }
-      },
-      {
-        timestamps: true,
-      },
+      }
     );
     schema.plugin(uniqueValidator);
     mongoose.model('Category', schema);

@@ -36,7 +36,7 @@
     "plivo": "^4.27.0",
     "regenerator-runtime": "^0.13.7",
     "slug": "^5.1.0",
-    "stripe": "^8.195.0",
+    "stripe": "^8.215.0",
     "twilio": "^3.72.0"
   },
   "devDependencies": {
