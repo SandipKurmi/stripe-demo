@@ -68,7 +68,7 @@ class Service {
         data: data,
       };
     } catch (err) {
-      // console.log('errors ssdsds',err);
+      console.log('errors ssdsds',err);
       return {
         error: true,
         statusCode: 500,
